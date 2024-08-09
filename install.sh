@@ -2,9 +2,9 @@
 
 if [ -z "$MONIKER" ]; then
   echo "*********************"
-  echo -e "\e[1m\e[34m		Lets's begin\e[0m"
+  echo -e "\e[1m\e[34m		Погрузись в мир Web3 вместе с https://web3easy.media\e[0m"
   echo "*********************"
-  echo -e "\e[1m\e[32m	Enter your MONIKER:\e[0m"
+  echo -e "\e[1m\e[32m	Создайте имя вашей ноды:\e[0m"
   echo "*********************"
   read MONIKER
   echo 'export MONIKER='$MONIKER >> $HOME/.bash_profile
@@ -23,41 +23,41 @@ echo "*****************************"
 sleep 1
 
 PS3='Select an action: '
-options=("Create a new wallet" "Recover an old wallet" "Exit")
+options=("Создать новый кошелек" "Восстановить кошелек" "Выход")
 select opt in "${options[@]}"
 do
   case $opt in
-    "Create a new wallet")
+    "Создать новый кошелек")
       command="$BINARY_NAME keys add wallet"
       break
       ;;
-    "Recover an old wallet")
+    "Восстановить кошелек")
       command="$BINARY_NAME keys add wallet --recover"
       break
       ;;
-    "Exit")
+    "Выход")
       exit
       ;;
-    *) echo "Invalid option. Please try again.";;
+    *) echo "Ошибка. Повторите попытку.";;
   esac
 done
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Updating packages and dependencies *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Обновление пакетов и зависимостей *****/////]] \e[0m" && sleep 1
 #UPDATE APT
 sudo apt update && apt upgrade -y
 apt install bc curl iptables build-essential git wget jq make gcc nano tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip libleveldb-dev -y
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Installing GO *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Установка GO *****/////]] \e[0m" && sleep 1
 #INSTALL GO
-source <(curl -s https://raw.githubusercontent.com/NodersUA/Scripts/main/system/go)
+# source <(curl -s https://raw.githubusercontent.com/Collieries/system/main/go)
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Downloading and building binaries *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Загрузка и создание двоичных файлов *****/////]] \e[0m" && sleep 1
 #INSTALL
 cd $HOME
 git clone $NODE_URL && cd $DIRECTORY
@@ -74,7 +74,7 @@ wget -O $HOME/$HIDDEN_DIRECTORY/config/genesis.json $GENESIS_URL
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Set the ports *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Порты установлены *****/////]] \e[0m" && sleep 1
 external_address=$(curl -s https://checkip.amazonaws.com)
 # config.toml
 sed -i.bak -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:${NODE_PORT}658\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://${external_address}:${NODE_PORT}657\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:${NODE_PORT}061\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:${NODE_PORT}656\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":${NODE_PORT}660\"%" $HOME/$HIDDEN_DIRECTORY/config/config.toml
@@ -89,7 +89,7 @@ ufw allow ${NODE_PORT}657
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Setup config *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\*****Конфигурация уствновлена*****/////]] \e[0m" && sleep 1
 
 # Set the minimum price for gas
 sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"$MINIMUM_GAS_PRICES\"/;" ~/$HIDDEN_DIRECTORY/config/app.toml
@@ -111,7 +111,7 @@ sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/$HIDDEN_DIRECTORY/conf
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Wallet *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Кошелек установлен *****/////]] \e[0m" && sleep 1
 
 if [ "$NODE_NAME" == "BABYLON" ]; then
 sed -i -e "s/^key-name *=.*/key-name = \"wallet\"/" ~/.babylond/config/app.toml
@@ -146,7 +146,7 @@ source $HOME/.bash_profile
 
 #==================================================================================================
 
-echo -e "\e[1m\e[32m [[\\\\\***** Service File *****/////]] \e[0m" && sleep 1
+echo -e "\e[1m\e[32m [[\\\\\***** Установка сервисных файлов *****/////]] \e[0m" && sleep 1
 
 # Create service file (One command)
 if [ "$BINARY_NAME" == "0gchaind" ]; then
@@ -198,14 +198,14 @@ if [ "$BINARY_NAME" == "0gchaind" ]; then
 systemctl enable Ogchaind
 systemctl restart Ogchaind
 echo '=============== SETUP FINISHED ==================='
-echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
-echo -e "To check logs:        \e[1m\e[33mjournalctl -u Ogchaind -f -o cat\e[0m"
+echo -e 'Статус ноды:        \e[1m\e[32mАктивна\e[0m'
+echo -e "Для проверки логов введите команду:        \e[1m\e[33mjournalctl -u Ogchaind -f -o cat\e[0m"
 else
 systemctl enable $BINARY_NAME
 systemctl restart $BINARY_NAME
 echo '=============== SETUP FINISHED ==================='
-echo -e 'Congratulations:        \e[1m\e[32mSUCCESSFUL NODE INSTALLATION\e[0m'
-echo -e "To check logs:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
+echo -e 'Статус ноды:        \e[1m\e[32mАктивна\e[0m'
+echo -e "Для проверки логов введите команду:        \e[1m\e[33mjournalctl -u $BINARY_NAME -f -o cat\e[0m"
 fi
 
-echo -e "To check sync status: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
+echo -e "Для проверки синхронизации введите команду: \e[1m\e[35mcurl localhost:${NODE_PORT}657/status\e[0m"
